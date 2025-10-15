@@ -1,0 +1,36 @@
+// snakeCase.js
+// Convert arbitrary text to snake_case.
+// Usage: const toSnakeCase = require('./snakeCase'); console.log(toSnakeCase("Hello World"));
+function toSnakeCase(input) {
+    if (typeof input !== 'string') return '';
+    let s = input.trim();
+    if (!s) return '';
+
+    // Normalize unicode (remove diacritics)
+    s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+
+    // Handle camelCase or PascalCase boundaries: "fooBar" -> "foo Bar"
+    s = s.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+
+    // Remove apostrophes and similar punctuation that should attach: "you're" -> "youre"
+    s = s.replace(/['’`]+/g, '');
+
+    // Replace any sequence of non-alphanumeric characters with an underscore
+    s = s.replace(/[^A-Za-z0-9]+/g, '_');
+
+    // Lowercase and trim underscores
+    s = s.toLowerCase().replace(/^_+|_+$/g, '');
+
+    return s;
+}
+
+module.exports = toSnakeCase;
+
+/*
+Examples:
+toSnakeCase("Hello World!")           -> "hello_world"
+toSnakeCase("  multiple   spaces ")  -> "multiple_spaces"
+toSnakeCase("XMLHttpRequest")        -> "xml_http_request"
+toSnakeCase("Café-au-lait")          -> "cafe_au_lait"
+toSnakeCase("user's_profile")        -> "users_profile"
+*/
